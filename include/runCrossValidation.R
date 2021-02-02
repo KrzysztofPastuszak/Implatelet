@@ -1,3 +1,17 @@
+
+
+#' Performs k-fold cross-valdidation
+#' returns:
+#' result - list of performance metrics, classification outputs and real classes
+#' input:
+#' model - keras CNN model
+#' dge
+#' dataSets - prepared with function prepareDataSets
+#' pathToWeights - path to initial weights file
+#' iters - number of iteriations
+#' k - k used in k-fold cv
+#' seed - used for generating k-fold splits
+
 runCrossValidation = function(model, dge, dataSets, pathToWeights, iters, k, seed)
 {
   # print(dim(usedSubset$testX))

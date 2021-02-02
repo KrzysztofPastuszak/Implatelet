@@ -8,30 +8,15 @@ dataPath = "data/"
 includePath = "include/" 
 geneInfoPath = "dgeGenesEnsembl75.RData"  
 library(pracma)  
-load(paste0(path, dataPath, geneInfoPath))
-# shouldBeOc = c("OC_026", "OC_092", "OC_122") 
-countsSubset = read.csv(paste0(path, dataPath, "ImPlatelet_counts_raw.tsv"), sep = "\t")#, col.names = T, row.names = T)
-sampleInfoAll = read.csv( paste0(path, dataPath, "ImPlatelet_samples.tsv"), sep = "\t")#, col.names = T, row.names = T)
-# sampleInfoAll = sampleInfoAll[-which(sampleInfoAll$OriginalGroup == "EC") , ]
-# write.table(sampleInfoAll, "/home/kp/Documents/Gumed/Implatelet/data/ImPlatelet_samples.tsv", sep = "\t", col.names = T, row.names = T)
-# write.table(countsSubset, "/home/kp/Documents/Gumed/Implatelet/data/ImPlatelet_counts_raw.tsv", sep = "\t", col.names = T, row.names = T)
-# countsSubset = countsSubset[, rownames(sampleInfoAll)]
-# generate DGE-object, as implemented from the edgeR package 
+load(paste0(path, dataPath, geneInfoPath)) 
+countsSubset = read.csv(paste0(path, dataPath, "ImPlatelet_counts_raw.tsv"), sep = "\t") 
+sampleInfoAll = read.csv( paste0(path, dataPath, "ImPlatelet_samples.tsv"), sep = "\t") 
 dge <- DGEList(counts = countsSubset,
                group = sampleInfoAll$OriginalGroup,
                genes = genes
 )
-dge$samples <- sampleInfoAll#cbind(dge$samples, samplesAll) # add the sample info to the object
-#save(dge, file = paste0(path, dataPath, "ovarianBotEcHcGdansk", Sys.Date(),".RData"))
-
-# if(length(which(dge$samples$OriginalGroup == "OC")) > 0 )
-# {
-#   dge = dge[, -which(dge$samples$OriginalGroup == "OC")]
-# }
-reportPath = paste(path, "Report/", sep = "") 
-# groupNameA = "HC"
-# groupNameB = "EC" 
-# groupNameC = "OC" 
+dge$samples <- sampleInfoAll  
+reportPath = paste(path, "Report/", sep = "")  
 source(paste(path, "include/statisticalAnalysis.R", sep = "")) 
 dataFiltered = normalizeDESeq2NoReport(dge$counts)#, healthyId, ovarianId, reportPath, groupNameA, groupNameB)
 
@@ -50,7 +35,7 @@ save.image(paste0(path, "preDataSetConstruction", Sys.Date(), ".RData"))
 source(paste0(path, includePath, "prepareDataSets.R"))
 seed = 123
 k = 5
-dataSets = prepareDataSets(dge, dataFiltered, diseaseLabel, matrixPath, picWidth, picHeight, k, seed)
+dataSets = prepareDataSets(dge, dataFiltered, diseaseLabel, matrixPath, picWidth, picHeight, seed)
 save.image(paste0(path, "preCV.RData"))
 source(paste0(path, includePath, "buildModel.R"))
 weightsPath = "weights/"

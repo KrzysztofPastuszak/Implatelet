@@ -1,10 +1,31 @@
-
+ 
+#' Creates directory if it didnt exist
+#' 
+#' Helper function
+#' input:
+#' mainDir = path in which directory should be created
+#' subDIr == name of the directory
+#' 
 createDirIfNotExists = function(mainDir, subDir){
   if (file.exists(paste(mainDir,  subDir, sep = "")) == F){
     
     dir.create(paste(mainDir, subDir, sep = ""))
   }  
-} 
+}  
+
+#' Build KEGG pathway image
+#' 
+#' This function build images and corresponding matrices based on expression data
+#' Input:
+#' sigSym - list of symbols in KEGG pathways connected to signalling processes
+#' metSym - list of symbols in KEGG pathways connected to metabolic processes
+#' cancerSYm - list of symbols in  KEGG pathways connected to cancerogenesis
+#' each symbol list is a list of KEGG pathways, where each KEGG pathway is represented as a list of symbols in the pathway
+#' data - normalized expression matrix with gene names as rownames
+#' col - column corresponding to the sample used
+#' picWidth - witdh in pixels (length of the longest pathway)
+#' picHeigh - height in pixels (number of pathways used)
+#' 
 buildExpressionPathwayMatrix = function(sigSym, metSym, cancerSym, data, col, picWidth = 345, picHeight = 243)
 {
   output = matrix(0, ncol = picWidth, nrow = picHeight)
@@ -37,8 +58,15 @@ buildExpressionPathwayMatrix = function(sigSym, metSym, cancerSym, data, col, pi
     k = k+1 
   } 
   return(output)
-}
-
+} 
+#' Prepares KEGG pathway panel images
+#' returns:
+#' matrixPath - path to directory with matrices
+#' input:
+#' path  - path to the directory in which matrices and images should beheld
+#' dataFiltered - normalized reads with ENSEMBL gene names as rownames
+#' pathwayPaths - name of the folder in which images and matrices should be stored. If the folder doesnt exist in path, it will be created
+#'  
 generateKeggPathwayImages = function(path, dataFiltered, pathwaysPath = "KeggImages")
 {
   library(KEGGREST)

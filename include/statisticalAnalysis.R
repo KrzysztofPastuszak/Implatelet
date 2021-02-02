@@ -1,15 +1,25 @@
 options(stringsAsFactors = FALSE)
 
-
-###
-# assuming data has proper column names and row names
-###
-
+ 
+ 
 
 my.t.test.p.value <- function(...) {
   obj<-try(t.test(...), silent=TRUE)
   if (is(obj, "try-error")) return(NA) else return(obj$p.value)
-}
+} 
+ 
+
+#' Normalizes data with VST and saves between group expression comparison
+#' returns:
+#' normalized expression matrix
+#' input:
+#' rawCounts
+#' beningnId - ids of group A (column indices in count matrix)
+#' malignantId - ids of group B (column indices in count matrix)
+#' reportPath - path where report should be saved
+#' groupNameA - name of group A 
+#' groupNameB - name of group B
+#' saveReport -  default T, check if report should be written to a .tsv file 
 normalizeDESeq2 = function ( rawCounts, benignId, malignantId, reportPath, groupNameA, groupNameB, saveReport = T)
 {
   library(DESeq2)
@@ -62,7 +72,14 @@ normalizeDESeq2 = function ( rawCounts, benignId, malignantId, reportPath, group
   return(logs_norm_arr_ord[, c(benignId, malignantId)])
 }
 
+ 
 
+#' Normalizes data with VST and saves between group expression comparison
+#' returns:
+#' normalized expression matrix
+#' input:
+#' rawCounts
+#'  
 normalizeDESeq2NoReport = function ( rawCounts )
 {
   library(DESeq2)
@@ -78,67 +95,5 @@ normalizeDESeq2NoReport = function ( rawCounts )
   logs_norm_arr_ord = assay(vsd)
   return(logs_norm_arr_ord) 
 }
-
-
-plotUmap = function(x, labels,
-                    main="A UMAP visualization of the TEPs dataset",
-                    colors=c("#ff7f00", "#e377c2", "#17becf"),
-                    pad=0.1, cex=0.65, pch=19, add=FALSE, legend.suffix="",
-                    cex.main=1, cex.legend=1, 
-                    legend.pos = "topright") {
-  library(umap)
-  layout = x
-  if (class(x)=="umap") {
-    layout = x$layout
-  }
-  
-  xylim = range(layout)
-  xylim = xylim + ((xylim[2]-xylim[1])*pad)*c(-0.5, 0.5)
-  if (!add) {
-    par(mar=c(0.2,0.7,1.2,0.7), ps=10)
-    plot(xylim, xylim, type="n", axes=F, frame=F)
-    rect(xylim[1], xylim[1], xylim[2], xylim[2], border="#aaaaaa", lwd=0.25)
-  }
-  points(layout[,1], layout[,2], col=colors[as.integer(labels)],
-         cex=cex, pch=pch)
-  mtext(side=3, main, cex=cex.main)
-  
-  labels.u = unique(labels)
-  legend.text = as.character(labels.u)
-  if (add) {
-    legend.pos = "bottomright"
-    legend.text = paste(as.character(labels.u), legend.suffix)
-  }
-  legend(legend.pos, legend=legend.text,
-         col=colors[as.integer(labels.u)],
-         bty="n", pch=pch, cex=cex.legend)
-}
-
-
-RowVar <- function(x) {
-  rowSums((x - rowMeans(x))^2)/(dim(x)[2] - 1)
-}
-visualizeAnalysisData = function ( data, benignId, malignantId, reportPath, groupNameA, groupNameB, saveReport = T)
-{
-  
-  # Filter 2 - remove flat genes with variation < 1st quartile 
-  data = data[RowVar(data) > summary(RowVar(data))[2],]
-  
-  pdf(paste(reportPath, "Figure_I_histogram_", groupNameA,"_", Sys.Date(), ".pdf", sep = ""))
-  dend_ec_oc <- hclust(dist(data))
-  par(cex = 0.7)
-  plot(dend_ec_oc, hang = -1, xlab =paste(groupNameA, " vs ", groupNameB, sep = "")  , sub = "")
-  dev.off()
-  
-  pdf(paste(reportPath, "Figure_II_dendrogram_","_", Sys.Date(), ".pdf", sep = ""))#, width = 1024, height = 1024)
-  hist(data)
-  dev.off()
-  
-  pdf(paste(reportPath, "Figure_III_pca_","_", Sys.Date(), ".pdf", sep = ""))#, width = 1024, height = 1024)
-  log.pca <- prcomp(t(data), center = TRUE, scale. = TRUE) 
-  
-  plot(log.pca$x[,c(1,2)], xlim = c(1.1*min(log.pca$x[,1])
-                                    , 1.1*max(log.pca$x[,1])), ylim =c(1.1*min(log.pca$x[,1])
-                                                                       , 1.1*max(log.pca$x[,1])))
-  dev.off()
-}
+ 
+ 

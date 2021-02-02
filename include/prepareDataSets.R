@@ -1,5 +1,18 @@
 
-prepareDataSets = function(dge, dataFiltered, diseaseLabel, matrixPath, picWidth, picHeight, k, seed){
+#' Loads data and prepares datasets for training and testing
+#' returns:
+#' list of sets (training, validation, test) with auxiliary info
+#' input:
+#' dge 
+#' dataFiltered - normalized reads with ENSEMBL gene names as rownames
+#' disease label - name of the disease used in sample info 
+#' matrixPath - path in which matrices are stored
+#' picWidth
+#' picHeight
+#' seed - used to split samples
+#' 
+prepareDataSets = function(dge, dataFiltered, diseaseLabel, matrixPath, picWidth, picHeight,  seed){
+
   allX =  array(0, dim = c(dim(dataFiltered)[2],picWidth, picHeight))
   for(i in seq(1:dim(dataFiltered)[2]))
   { 

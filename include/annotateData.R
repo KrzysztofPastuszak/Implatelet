@@ -1,4 +1,14 @@
-
+ 
+#' Annotate transcripts
+#' 
+#' This function adds information about gene name and position to transcripts
+#' returns list with two elements:
+#' dataFIltered = normalized expression matrix with gene namesas rownames
+#' genePositionInfo - table with position andname information about each transcript
+#' input:
+#' gtfPath19 - path to Gencode hg19 annotaton 
+#' dataFiltered - normalized reads with ENSEMBL rownames
+#' 
 annotateData = function(gtfPath19, dataFiltered)
 {
 ann = read.delim(gtfPath19, skip = 5, header = FALSE)

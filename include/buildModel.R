@@ -1,3 +1,16 @@
+ 
+
+#' Prepares keras CNN model
+#' returns:
+#' model
+#' input:
+#' path  - path to the directory in which matrices and images should beheld
+#' weightsPath - path in which weights should be stored
+#' weightsFile - optional, name of the file with initial weights, default modelInitialWeights.hdf5
+#' picWidth
+#' picHeight
+
+ 
 buildModel = function(path, weightsPath = "weights/", weightsFile = "modelInitialWeights.hdf5", picWidth = 345, picHeight = 243)
 {
   library(caret)
