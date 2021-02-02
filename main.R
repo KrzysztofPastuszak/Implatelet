@@ -1,4 +1,3 @@
-
 options(stringsAsFactors = FALSE)
 library(edgeR)
 path = "/home/kp/Documents/Gumed/Implatelet/"
